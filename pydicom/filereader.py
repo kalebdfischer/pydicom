@@ -235,15 +235,11 @@ def data_element_generator(
         # undefined length SQs and items of undefined lengths can be nested
         # and it would be error-prone to read to the correct outer delimiter
         else:
-            # VR UN with undefined length shall be handled as SQ
-            # see PS 3.5, section 6.2.2
-            if VR == 'UN':
-                VR = 'SQ'
             # Try to look up type to see if is a SQ
             # if private tag, won't be able to look it up in dictionary,
             #   in which case just ignore it and read the bytes unless it is
             #   identified as a Sequence
-            if VR is None or VR == 'UN' and config.replace_un_with_known_vr:
+            if VR is None:
                 try:
                     VR = dictionary_VR(tag)
                 except KeyError:
