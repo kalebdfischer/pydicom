@@ -1659,11 +1659,8 @@ class ImageFileReader:
     @property
     def _pixels_per_frame(self) -> int:
         """int: Number of pixels per frame"""
-        return int(math.prod([
-            self.dataset.Rows,
-            self.dataset.Columns,
-            self.dataset.SamplesPerPixel
-        ]))
+        # math.prod isn't a good enough reason to require python 3.8
+        return int(self.dataset.Rows * self.dataset.Columns * self.dataset.SamplesPerPixel)
 
     @property
     def _bytes_per_frame_uncompressed(self) -> int:
