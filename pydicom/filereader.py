@@ -1516,14 +1516,10 @@ class ImageFileReader:
 
         """
         pos = fp.tell()
-        read_preamble(fp, False)
-        file_meta = _read_file_meta_info(fp)
+        not_0002 = lambda tag, _, _2: tag.group != 2
+        dataset_tmp = read_partial(fp, stop_when=not_0002, force=True)
         fp.seek(pos)
-        transfer_syntax_uid = pydicom.uid.UID(file_meta.TransferSyntaxUID)
-        return (
-            transfer_syntax_uid.is_little_endian,
-            transfer_syntax_uid.is_implicit_VR,
-        )
+        return dataset_tmp.is_little_endian, dataset_tmp.is_implicit_VR
 
     def _read_dataset(self) -> None:
         """Read the dataset metadata from file.
@@ -1536,9 +1532,16 @@ class ImageFileReader:
         logger.debug('read metadata elements')
         if self._fp is None:
             raise IOError('File has not been opened for reading.')
-
+        file_pos = self._fp.tell()
         try:
             dataset = dcmread(self._fp, stop_before_pixels=True)
+        except InvalidDicomError as err:
+            try:
+                self._fp.seek(file_pos)
+                dataset = dcmread(self._fp, stop_before_pixels=True, force=True)
+                dataset.fix_meta_info()
+            except Exception as err:
+                raise IOError(f'DICOM metadata cannot be read from file: "{err}"')
         except Exception as err:
             raise IOError(f'DICOM metadata cannot be read from file: "{err}"')
 
