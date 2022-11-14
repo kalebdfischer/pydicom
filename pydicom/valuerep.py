@@ -979,7 +979,7 @@ class DSfloat(float):
         cls: Type["DSfloat"],
         val: Union[None, str, int, float, Decimal],
         auto_format: bool = False,
-        validation_mode: int = None
+        validation_mode: Optional[int] = None
     ) -> Optional[Union[str, "DSfloat"]]:
         if val is None:
             return val
@@ -992,7 +992,7 @@ class DSfloat(float):
     def __init__(
         self, val: Union[str, int, float, Decimal],
         auto_format: bool = False,
-        validation_mode: int = None
+        validation_mode: Optional[int] = None
     ) -> None:
         """Store the original string if one given, for exact write-out of same
         value later.
@@ -1095,7 +1095,7 @@ class DSdecimal(Decimal):
         cls: Type["DSdecimal"],
         val: Union[None, str, int, float, Decimal],
         auto_format: bool = False,
-        validation_mode: int = None
+        validation_mode: Optional[int] = None
     ) -> Optional[Union[str, "DSdecimal"]]:
         """Create an instance of DS object, or return a blank string if one is
         passed in, e.g. from a type 2 DICOM blank value.
@@ -1125,7 +1125,7 @@ class DSdecimal(Decimal):
         self,
         val: Union[str, int, float, Decimal],
         auto_format: bool = False,
-        validation_mode: int = None
+        validation_mode: Optional[int] = None
     ) -> None:
         """Store the original string if one given, for exact write-out of same
         value later. E.g. if set ``'1.23e2'``, :class:`~decimal.Decimal` would
@@ -1219,7 +1219,7 @@ else:
 
 def DS(
     val: Union[None, str, int, float, Decimal], auto_format: bool = False,
-    validation_mode: int = None
+    validation_mode: Optional[int] = None
 ) -> Union[None, str, DSfloat, DSdecimal]:
     """Factory function for creating DS class instances.
 
@@ -1257,7 +1257,7 @@ class IS(int):
 
     def __new__(  # type: ignore[misc]
             cls: Type["IS"], val: Union[None, str, int, float, Decimal],
-            validation_mode: int = None
+            validation_mode: Optional[int] = None
     ) -> Optional[Union[str, "IS"]]:
         """Create instance if new integer string"""
         if val is None:
@@ -1296,7 +1296,7 @@ class IS(int):
         return newval
 
     def __init__(self, val: Union[str, int, float, Decimal],
-                 validation_mode: int = None) -> None:
+                 validation_mode: Optional[int] = None) -> None:
         # If a string passed, then store it
         if isinstance(val, str):
             self.original_string = val.strip()
@@ -1332,7 +1332,7 @@ _T = TypeVar('_T')
 
 def MultiString(
         val: str, valtype: Optional[Callable[[str], _T]] = None,
-        validation_mode: int = None
+        validation_mode: Optional[int] = None
 ) -> Union[_T, MutableSequence[_T]]:
     """Split a string by delimiters if there are any
 
@@ -1464,7 +1464,7 @@ class PersonName:
         val: Union[bytes, str, "PersonName"],
         encodings: Optional[Sequence[str]] = None,
         original_string: Optional[bytes] = None,
-        validation_mode: int = None
+        validation_mode: Optional[int] = None
     ) -> None:
         """Create a new ``PersonName``.
 
